@@ -1,0 +1,104 @@
+version: '3'
+
+services:
+
+  # -----------------------------------
+  # PRESTO COORDINATOR
+  # Nodo principal del cluster
+  # Gestiona consultas y distribuye tareas
+  # -----------------------------------
+  coordinator:
+    image: prestodb/presto:latest
+    container_name: presto-coordinator
+
+    # Puerto de acceso a Presto UI
+    ports:
+      - "8080:8080"
+
+    # Volúmenes compartidos
+    volumes:
+
+      # Configuración del coordinator
+      - ./presto/coordinator/etc:/opt/presto-server/etc
+
+      # Acceso al Data Lake
+      - ./data-lake:/data-lake
+
+    networks:
+      - presto-network
+
+
+  # -----------------------------------
+  # PRESTO WORKER 1
+  # Ejecuta tareas distribuidas
+  # -----------------------------------
+  worker1:
+    image: prestodb/presto:latest
+    container_name: presto-worker1
+
+    volumes:
+
+      # Configuración del worker
+      - ./presto/worker1/etc:/opt/presto-server/etc
+
+      # Acceso al Data Lake
+      - ./data-lake:/data-lake
+
+    networks:
+      - presto-network
+
+
+  # -----------------------------------
+  # PRESTO WORKER 2
+  # Segundo nodo de procesamiento
+  # -----------------------------------
+  worker2:
+    image: prestodb/presto:latest
+    container_name: presto-worker2
+
+    volumes:
+
+      # Configuración del worker
+      - ./presto/worker2/etc:/opt/presto-server/etc
+
+      # Acceso al Data Lake
+      - ./data-lake:/data-lake
+
+    networks:
+      - presto-network
+
+
+  # -----------------------------------
+  # POSTGRESQL
+  # Base de datos relacional
+  # Fuente SQL del proyecto
+  # -----------------------------------
+  postgres:
+    image: postgres:15
+    container_name: postgres-db
+
+    environment:
+
+      # Usuario de PostgreSQL
+      POSTGRES_USER: admin
+
+      # Contraseña
+      POSTGRES_PASSWORD: admin
+
+      # Base de datos inicial
+      POSTGRES_DB: medioambiente
+
+    # Puerto PostgreSQL
+    ports:
+      - "5432:5432"
+
+    networks:
+      - presto-network
+
+
+# -----------------------------------
+# RED INTERNA DEL PROYECTO
+# Permite comunicación entre contenedores
+# -----------------------------------
+networks:
+  presto-network:
