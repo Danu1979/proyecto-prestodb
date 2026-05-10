@@ -1,0 +1,5 @@
+station_id,station_name,province,environment_type
+1,Valencia Centro,Valencia,Urbana
+2,Albufera,Valencia,Humedal
+3,Alicante Puerto,Alicante,Costera
+4,Murcia Huerta,Murcia,Agrícola
