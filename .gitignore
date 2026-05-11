@@ -3,3 +3,4 @@ __pycache__/
 *.pkl
 .vscode/
 .env
+data-lake/hive-metastore/
