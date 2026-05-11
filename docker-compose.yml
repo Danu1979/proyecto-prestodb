@@ -91,7 +91,12 @@ services:
     # Puerto PostgreSQL
     ports:
       - "5432:5432"
-
+      
+     # Montar la carpeta de datos
+    volumes:
+      - ./data-lake/csv:/csv-data          # para importar CSV
+      - postgres_data:/var/lib/postgresql/data # para tener presistencia de los datos
+  
     networks:
       - presto-network
 
@@ -102,3 +107,6 @@ services:
 # -----------------------------------
 networks:
   presto-network:
+  
+volumes:
+  postgres_data:
